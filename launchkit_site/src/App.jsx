@@ -1,13 +1,11 @@
 import { useState } from 'react'
-
+import LandingPage from './pages/landingpage'
 import './index.css'
 
 function App() {
 
-
   return (
-    <><h1 className='text-4xl text-red-500 font-bold'> H! Tag
-      </h1></>
+    <LandingPage/>
   )
 }
 

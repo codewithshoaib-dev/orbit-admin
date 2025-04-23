@@ -1,28 +1,32 @@
 from rest_framework import serializers
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import authenticate, get_user_model
-
+from django.utils.html import escape
 from rest_framework.response import Response
+
 
 
 User = get_user_model()
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-
+    password = serializers.CharField(write_only=True)
     class Meta:
-        password = serializers.CharField(write_only=True)
+       
         model = User
         fields = [
             'username',
             'email',
             'password'
         ]
-        
+
+    def clean_username(self, value):
+        return escape(value.strip())
 
     def validate_username(self, value):
         if len(value) < 3:
             raise serializers.ValidationError('Usernname must be at least 3 characters.')
         return value
+    
     
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
@@ -34,7 +38,7 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     
-    def validate(self,data):
+    def validate(self, data):
         username = data['username']
         password = data['password']
 
@@ -49,4 +53,10 @@ class UserLoginSerializer(serializers.Serializer):
            
         raise serializers.ValidationError('Invalid Credentials')
 
-
+class UserInfoSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(read_only=True)
+    class Meta:
+        model = User
+        fields = [
+            'username'
+        ]

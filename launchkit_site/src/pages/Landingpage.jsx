@@ -10,15 +10,15 @@ const LandingPage = () => {
         message: "",
     })
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value})
+        setFormData({...formData, [e.target.name]: e.target.value})
     }
 
     const handleContactSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post("api/contact", formData);
+             const response = await api.post("/contact", formData);
             alert("Message sent successfully!");
+            console.log(response)
         } catch (error) {
             console.error("Error sending message:", error);
             alert("Failed to send message.");

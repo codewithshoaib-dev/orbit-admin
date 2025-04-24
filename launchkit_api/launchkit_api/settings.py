@@ -8,7 +8,6 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 env = environ.Env()
 env.read_env(BASE_DIR / '.env')
 
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'corsheaders',
+    'cms',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -127,8 +127,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'launchkit_api.authentication.CustomCookieJWTAuthentication',
+        #'launchkit_api.authentication.CustomCookieJWTAuthentication',
        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+      # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES':[
       'rest_framework.permissions.IsAuthenticated',
@@ -156,6 +157,9 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+]
+CORS_TRUSTED_ORIGINS = [
+    'http://localhost:5173'
 ]
 
 CORS_ALLOW_CREDENTIALS=True

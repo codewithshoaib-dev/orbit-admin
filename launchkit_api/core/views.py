@@ -4,8 +4,10 @@ from .serializers import ContactMessageSerializer
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 class ContactMessageCreteateView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
     serializer_class = ContactMessageSerializer
 
     def post(self, request, *args, **kwargs):

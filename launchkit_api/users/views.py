@@ -7,13 +7,14 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from launchkit_api.authentication import CustomCookieJWTAuthentication
 
 User = get_user_model()
 
 class UserRegisterView(generics.CreateAPIView):
-    pagination_class=[AllowAny]
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -35,6 +36,7 @@ class UserLoginView(APIView):
 
        refresh = RefreshToken.for_user(user)
        response = Response()
+      
        
        response.set_cookie(key='access_token', value=str(refresh.access_token),
                            httponly=True, samesite='Lax', secure=False)
@@ -44,6 +46,7 @@ class UserLoginView(APIView):
        return response
 
 class UserInfoView(generics.ListAPIView):
+   authentication_classes = [CustomCookieJWTAuthentication]
    serializer_class = UserInfoSerializer
    def get_queryset(self):
        username = self.request.user.username
@@ -88,4 +91,17 @@ class CookieTokenRefreshView(APIView):
             max_age=300,  # 5 minutes
         )
 
+        return response
+
+
+
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        response = Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
+        
+        # Delete cookies
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        
         return response

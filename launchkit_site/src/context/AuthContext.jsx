@@ -43,6 +43,7 @@ const AuthProvider = ({ children }) => {
         const interval = setInterval(checkAuthStatus, 60000); 
         return () => clearInterval(interval); 
     }, []);
+    console.log(user)
 
     const login = async (username, password) => {
         try {

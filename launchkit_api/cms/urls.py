@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import PublicContentBySlugView
-
+from .views import DashboardStatsView
 urlpatterns = [
-    path('content/<slug:slug>/', PublicContentBySlugView.as_view(), name='public-content-by-slug'),
+
+    path('dashboard-stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
 ]

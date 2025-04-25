@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ContentCard from "../components/ContentCard";
 import Loader from "../components/Loader";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";``
 
 export default function ContentListPage() {
   const [contents, setContents] = useState([]);

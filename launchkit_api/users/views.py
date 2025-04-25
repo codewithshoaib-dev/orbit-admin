@@ -30,27 +30,27 @@ class UserLoginView(APIView):
     permission_classes=[AllowAny]
     def post(self, request):
        serializer = UserLoginSerializer(data=request.data)
-       serializer.is_valid(raise_exception=True)
 
-       user = serializer.validated_data['user']
+       if serializer.is_valid():
+            user = serializer.validated_data['user']
 
-       refresh = RefreshToken.for_user(user)
-       response = Response()
-      
-       
-       response.set_cookie(key='access_token', value=str(refresh.access_token),
-                           httponly=True, samesite='Lax', secure=False)
-       response.set_cookie(key='refresh_token', value=str(refresh), 
-                           httponly=True, samesite='Lax', secure=False)
+            refresh = RefreshToken.for_user(user)
+            response = Response()
+            
+            response.set_cookie(key='access_token', value=str(refresh.access_token),
+                                httponly=True, samesite='Lax', secure=False)
+            response.set_cookie(key='refresh_token', value=str(refresh), 
+                                httponly=True, samesite='Lax', secure=False)
 
-       return response
+            return response
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserInfoView(generics.ListAPIView):
+class UserInfoView(APIView):
    authentication_classes = [CustomCookieJWTAuthentication]
-   serializer_class = UserInfoSerializer
-   def get_queryset(self):
-       username = self.request.user.username
-       return User.objects.filter(username=username)
+   def get(self, request):
+       serializer = UserInfoSerializer(request.user)
+       print(serializer.data)
+       return Response(serializer.data)
 
 
 class CookieTokenRefreshView(APIView):

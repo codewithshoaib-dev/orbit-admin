@@ -25,6 +25,9 @@ const api = axios.create({
     },
 });
 
+
+  
+
 api.interceptors.response.use(
     (response) => response,
     async (error) => {

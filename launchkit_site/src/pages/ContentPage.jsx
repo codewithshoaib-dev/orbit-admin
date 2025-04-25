@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import api from "../api";
+import api from "../api/axios";
+import Loader from "../components/Loader";
 
 function ContentPage() {
   const { slug } = useParams();
@@ -14,7 +15,7 @@ function ContentPage() {
   }, [slug]);
 
   if (error) return <p className="text-red-600">{error}</p>;
-  if (!content) return <p>Loading...</p>;
+  if (!content) return <Loader />;
 
   return (
     <div className="max-w-3xl mx-auto py-12">

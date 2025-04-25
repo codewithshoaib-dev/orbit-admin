@@ -1,83 +1,84 @@
-import React, { createContext, useState, useEffect } from "react";
-import api from "../api/axios"; 
+import React, { createContext, useState, useEffect, useCallback } from "react";
+import api, { setLogoutHandler } from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import { setLogoutHandler } from "../api/axios";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); 
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // tri-state: true | false
+  const navigate = useNavigate();
 
-    
+  // clean fetch user function
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await api.get("/user", { withCredentials: true });
+      console.log(response.data)
+      setUser(response.data); // assuming data is {id, username, email}
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    // Fetch user details on app load
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await api.get("/user", { withCredentials: true });
-                setUser(response.data.user); 
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-                setUser(null); // Clear user data if fetching fails
-            } finally {
-                setLoading(false); // Stop loading after fetching
-            }
-        };
+  // Fetch on app load
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
-       fetchUser(); 
-    }, []);
-
-    // Keep checking authentication status
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                const response = await api.get("/user", { withCredentials: true });
-                setUser(response.data.user); 
-            } catch (error) {
-                setUser(null); // Clear user data if request fails
-            }
-        };
-
-        const interval = setInterval(checkAuthStatus, 60000); 
-        return () => clearInterval(interval); 
-    }, []);
-    console.log(user)
-
-    const login = async (username, password) => {
-        try {
-            console.log(username, password)
-            const response = await api.post("/login", {username, password}, { withCredentials: true });
-            setUser(response.data.user); 
-            navigate("/dashboard"); 
-        } catch (error) {
-            console.error("Login failed:", error);
-            throw new Error("Invalid credentials or server error.");
-        }
+  // Refresh user on tab focus or visibility change
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchUser();
+      }
     };
-
-    
-    const logout = async () => {
-        try {
-            await api.post("/logout", {}, { withCredentials: true });
-            setUser(null); 
-            navigate("/login");
-        } catch (error) {
-            console.error("Logout failed:", error);
-            throw new Error("Failed to log out. Please try again.");
-        }
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-    
-    useEffect(() => {
-        setLogoutHandler(logout);
-    }, [logout]);
+  }, [fetchUser]);
 
-    return (
-        <AuthContext.Provider value={{ user, loading, isAuthenticated: !!user, login, logout }}>
-            {!loading && children}
-        </AuthContext.Provider>
-    );
+
+  const login = async (username, password) => {
+    try {
+      const response = await api.post("/login", { username, password }, { withCredentials: true });
+      await fetchUser();
+      navigate("/dashboard");
+      return { success: true };
+    } catch (error) {
+      console.error("Login failed:", error);
+      if (error.response?.data) {
+        return { success: false, errors: error.response.data }; // assuming your API returns {username: [...], password: [...]} or {non_field_errors: [...]}
+      }
+      return { success: false, errors: { non_field_errors: ["Server error. Please try again."] } };
+    }
+  };
+  
+
+  const logout = async () => {
+    try {
+      await api.post("/logout", {}, { withCredentials: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setUser(null);
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    setLogoutHandler(logout);
+  }, [logout]);
+
+  const isAuthenticated = !loading && !!user;
+
+  return (
+    <AuthContext.Provider value={{ user, loading, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export { AuthContext, AuthProvider };

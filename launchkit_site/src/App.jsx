@@ -4,30 +4,43 @@ import './index.css';
 import Register from './pages/Register';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import DashboardHome from './pages/DashboardHome';
 import { AuthContext } from './context/AuthContext';
 import ContentListPage from './pages/ContentListPage';
+import Loader from './components/Loader';
+import ProtectedRoute from './components/ProtectedRoute';
+import DashboardLayout from './components/DashboardLayout';
+import ContentPage from './pages/ContentPage';
+import NotFound from './pages/NotFound';
+import CreatePostForm from './pages/CreatePostForm';
+
 
 function App() {
-  const { IsAuthenticated } = useContext(AuthContext); // Get the user from AuthContext
+  const {loading, isAuthenticated } = useContext(AuthContext); 
+  
+  if(loading){
+    return <Loader/>
+  }
 
   return (
     <Routes>
-      {IsAuthenticated ? (
+      {isAuthenticated ? (
         // Authenticated routes
         <>
-          <Route path='content_blocks' element={<ContentListPage/>}  />
-          <Route path='dashboard' element={<Dashboard />} />
-          <Route path='*' element={<Navigate to='/dashboard' />} />
+          <Route path='content' element={<ContentListPage/>}  />
+          <Route path='content/:slug' element={<ContentPage />} />
+          <Route path="/dashboard" element={ <ProtectedRoute> <DashboardLayout>  <DashboardHome /> </DashboardLayout> </ProtectedRoute>}/>
+          <Route path='*' element={<NotFound />} />
+          <Route path='' element={<LandingPage />} />
+          <Route path='create_post' element={<CreatePostForm/>} />
         </>
       ) : (
         // Unauthenticated routes
         <>
-          <Route path='dashboard' element={<Dashboard />} />
           <Route path='' element={<LandingPage />} />
           <Route path='register' element={<Register />} />
           <Route path='login' element={<Login />} />
-          <Route path='*' element={<Navigate to='/login' />} />
+          <Route path='*' element={<NotFound />} />
         </>
       )}
     </Routes>

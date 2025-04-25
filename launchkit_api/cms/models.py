@@ -3,28 +3,32 @@ import uuid
 from django.utils.text import slugify
 
 
-class ContenBlockModel(models.Model):
+class CategoryModel(models.Model):
+    name = models.CharField(max_length=150)
+    slug = models.SlugField(unique=True, blank=True)
 
-    CONTENT_TYPES = [
-        ('text', 'Text'),
-        ('image', 'Image'),
-        ('link', 'Link'),
-    ]
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
-    STATUS_TYPES = [
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-    ]
+
+class ContentModel(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True, db_index=True)
-    content_type = models.CharField(max_length=30, choices=CONTENT_TYPES)
-    content = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_TYPES, default='draft')
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, blank=True)
+    content = models.TextField()
+    img = models.ImageField(upload_to='blog/', null=True, blank=True)
+    is_published = models.BooleanField(default=False)
+    reading_time = models.PositiveIntegerField()
+    categories = models.ManyToManyField(CategoryModel, blank=True)
+    seo_title = models.CharField(max_length=250, blank=True)
+    seo_description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    published_at = models.DateTimeField(null=True, blank=True)
+    views = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if not self.slug:

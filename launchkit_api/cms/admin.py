@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import ContenBlockModel
+from .models import ContentModel
 
-admin.site.register(ContenBlockModel)
+admin.site.register(ContentModel)

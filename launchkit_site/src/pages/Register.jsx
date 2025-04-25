@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Loader from "../components/Loader";
+
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({}); // Store backend validation errors here
   const Navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
-    setErrors({}); // Clear any existing errors
+    setErrors({}); 
 
     try {
       const response = await api.post("register", {
@@ -28,14 +28,17 @@ const Register = () => {
     } catch (error) {
       console.log(error);
       if (error.response && error.response.data) {
-        // Assuming backend sends field-specific errors in an object, e.g., { username: ["This username is already taken."] }
         setErrors(error.response.data);
-        setMessage("Registration failed. Please check the errors below.");
+        
       }
     } finally {
       setLoading(false);
     }
   };
+  
+    if (loading){
+      return <Loader />
+    }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -55,15 +58,8 @@ const Register = () => {
         {/* Form Panel */}
         <div className="w-full md:w-2/3 p-8 flex flex-col justify-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-800">
-            Create an Account
+            Sign up now!
           </h2>
-
-          {/* Display a general error message */}
-          {message && (
-            <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
-              {message}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -112,13 +108,13 @@ const Register = () => {
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg"
             >
-              Register
+              Sign up
             </button>
           </form>
           <p className="mt-6 text-sm text-center text-gray-600">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-600 hover:underline">
-              Log In
+              Sign in
             </Link>
           </p>
         </div>

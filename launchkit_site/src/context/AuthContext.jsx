@@ -6,15 +6,15 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // tri-state: true | false
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // clean fetch user function
+
   const fetchUser = useCallback(async () => {
     try {
       const response = await api.get("/user", { withCredentials: true });
       console.log(response.data)
-      setUser(response.data); // assuming data is {id, username, email}
+      setUser(response.data); 
     } catch (error) {
       setUser(null);
     } finally {
@@ -60,11 +60,14 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post("/logout", {}, { withCredentials: true });
+      console.log('Loggin out')
+      
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
       setUser(null);
-      navigate("/login");
+      
+      //navigate("/login");
     }
   };
 

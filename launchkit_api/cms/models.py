@@ -27,7 +27,7 @@ class ContentModel(models.Model):
     seo_description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    published_at = models.DateTimeField(null=True, blank=True)
+    published_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):

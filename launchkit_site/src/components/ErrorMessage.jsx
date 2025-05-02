@@ -1,11 +1,20 @@
 import React from "react";
 
-function ErrorMessage({ message }) {
+const ErrorMessage = ({ message, onRetry }) => {
   return (
-    <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl">
-      <p className="text-sm">{message}</p>
+    <div className="flex flex-col items-center justify-center bg-red-100 text-red-700 p-4 rounded-lg shadow-md">
+      <p className="text-lg font-semibold mb-2">Oops! Something went wrong.</p>
+      <p className="text-sm mb-4">{message}</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        >
+          Retry
+        </button>
+      )}
     </div>
   );
-}
+};
 
-export default ErrorMessage
+export default ErrorMessage;

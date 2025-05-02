@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/Button";
 import { Textarea } from "../components/ui/TextArea";
@@ -9,7 +9,7 @@ import { Card, CardContent } from "../components/ui/card";
 import Select from "react-select";
 import { Switch } from "../components/ui/switch";
 
-
+// --- Form state reducer for scalability ---
 const initialState = {
   title: "",
   slug: "",
@@ -24,6 +24,8 @@ const initialState = {
 
 function formReducer(state, action) {
   switch (action.type) {
+    case "SET_FORM":
+      return { ...state, ...action.payload };
     case "UPDATE_FIELD":
       return { ...state, [action.field]: action.value };
     case "RESET_FORM":
@@ -33,12 +35,14 @@ function formReducer(state, action) {
   }
 }
 
-const CreatePostForm = () => {
+const EditPostForm = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, dispatch] = useReducer(formReducer, initialState);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [errors, setErrors] = useState({}); // Changed to an object to store field-specific errors
+  const [errors, setErrors] = useState({});
+  const [loadingPost, setLoadingPost] = useState(true);
   const [activeTab, setActiveTab] = useState("basicInfo");
 
   // Fetch categories
@@ -61,7 +65,29 @@ const CreatePostForm = () => {
     fetchCategories();
   }, []);
 
-  // Generic input handler
+  // Fetch existing post data
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await api.get(`/content/${id}/`);
+        const postData = response.data;
+        dispatch({
+          type: "SET_FORM",
+          payload: {
+            ...postData,
+            categories: postData.categories.map((cat) => cat.id),
+            img: null, // img should remain null unless user uploads a new one
+          },
+        });
+      } catch (error) {
+        console.error("Failed to fetch post", error);
+      } finally {
+        setLoadingPost(false);
+      }
+    };
+    fetchPost();
+  }, [id]);
+
   const handleChange = (e) => {
     const { name, value, type, files, checked } = e.target;
     const newValue = type === "file" ? files[0] : type === "checkbox" ? checked : value;
@@ -82,24 +108,28 @@ const CreatePostForm = () => {
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "categories") {
         value.forEach((id) => data.append("categories", id));
-      } else if (key === "img" && value instanceof File) {
+      } else if (key === "img" && value) {
         data.append(key, value);
-      } else if (value !== undefined && value !== null) {
+      } else {
         data.append(key, value);
       }
     });
 
     try {
-      const response = await api.post("/content/", data, {
+      await api.put(`/content/${id}/`, data, {
         headers: {
           "Content-Type": undefined,
         },
       });
-      navigate(`/blog/${response.data.slug}`);
+      navigate(`/blog/${formData.slug}`);
     } catch (error) {
       setErrors(error.response?.data || {});
     }
   };
+
+  if (loadingPost) {
+    return <p className="text-center mt-10">Loading post data…</p>;
+  }
 
   return (
     <Card className="max-w-3xl mx-auto p-6 mt-8 shadow-2xl rounded-2xl">
@@ -108,9 +138,7 @@ const CreatePostForm = () => {
           {["basicInfo", "seoSettings", "content"].map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-2 ${
-                activeTab === tab ? "border-b-2 border-blue-500 font-semibold" : ""
-              }`}
+              className={`px-4 py-2 ${activeTab === tab ? "border-b-2 border-blue-500 font-semibold" : ""}`}
               onClick={() => handleTabChange(tab)}
               type="button"
             >
@@ -124,6 +152,7 @@ const CreatePostForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* BASIC INFO */}
           {activeTab === "basicInfo" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,7 +187,7 @@ const CreatePostForm = () => {
                   <Input type="file" name="img" onChange={handleChange} accept="image/*" />
                   {formData.img && (
                     <p className="text-sm text-gray-600 mt-2">
-                      Current file: {formData.img.name}
+                      Selected file: {formData.img.name}
                     </p>
                   )}
                   {errors.img && <p className="text-red-500 text-sm">{errors.img}</p>}
@@ -191,14 +220,13 @@ const CreatePostForm = () => {
             </div>
           )}
 
+          {/* SEO SETTINGS */}
           {activeTab === "seoSettings" && (
             <div className="space-y-6">
               <div>
                 <Label>SEO Title</Label>
                 <Input name="seo_title" value={formData.seo_title} onChange={handleChange} />
-                {errors.seo_title && (
-                  <p className="text-red-500 text-sm">{errors.seo_title}</p>
-                )}
+                {errors.seo_title && <p className="text-red-500 text-sm">{errors.seo_title}</p>}
               </div>
               <div>
                 <Label>SEO Description</Label>
@@ -215,6 +243,7 @@ const CreatePostForm = () => {
             </div>
           )}
 
+          {/* CONTENT */}
           {activeTab === "content" && (
             <div className="space-y-6">
               <div>
@@ -240,7 +269,7 @@ const CreatePostForm = () => {
           )}
 
           <Button type="submit" className="w-full md:w-auto">
-            Create Post
+            Update Post
           </Button>
         </form>
       </CardContent>
@@ -248,4 +277,4 @@ const CreatePostForm = () => {
   );
 };
 
-export default CreatePostForm;
+export default EditPostForm;

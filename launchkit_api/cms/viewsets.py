@@ -5,20 +5,23 @@ from .serializers import ContentSerializer, ContentCreateUpdateSerializer, Categ
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from .pagination import PostPagination
 
 class ContentViewSet(viewsets.ModelViewSet):
     queryset = ContentModel.objects.all()
+    pagination_class = (PostPagination)
+    lookup_field = 'slug'
+
+    def get_authenticators(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            return [CustomCookieJWTAuthentication()]
+        return []
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAuthenticated()]
         return [] 
     
-    def get_authenticators(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [CustomCookieJWTAuthentication()]
-        return []
-
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return ContentCreateUpdateSerializer
@@ -29,12 +32,11 @@ class ContentViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.views += 1
         instance.save(update_fields=['views'])
-        return Response({'message': 'View counted'})
+        return Response({'message': 'View counted'}, status=status.HTTP_200_OK)
     
-
-
 class CategoryViewSet(viewsets.ModelViewSet):
     authentication_classes = [CustomCookieJWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = CategoryModel.objects.all()
     serializer_class = CategorySerializer
+    lookup_field = 'id'

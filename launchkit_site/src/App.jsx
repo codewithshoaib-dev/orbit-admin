@@ -13,36 +13,34 @@ import DashboardLayout from './components/DashboardLayout';
 import ContentPage from './pages/ContentPage';
 import NotFound from './pages/NotFound';
 import CreatePostForm from './pages/CreatePostForm';
-
+import EditPostForm from './pages/EditPostForm';
+import CreateCategoryForm from './pages/CreateCategoryForm';
+import CategoriesList from './pages/CategoriesList';
+import PublicContentPage from './pages/PublicContentPage';
 
 function App() {
-  const {loading, isAuthenticated } = useContext(AuthContext); 
   
-  if(loading){
-    return <Loader/>
-  }
-
   return (
     <Routes>
-      {isAuthenticated ? (
-        // Authenticated routes
-        <>
+
+          <Route path='blog/:slug' element={<PublicContentPage/>}  />
           <Route path='content' element={<ContentListPage/>}  />
-          <Route path='content/:slug' element={<ContentPage />} />
-          <Route path="/dashboard" element={ <ProtectedRoute> <DashboardLayout>  <DashboardHome /> </DashboardLayout> </ProtectedRoute>}/>
-          <Route path='*' element={<NotFound />} />
-          <Route path='' element={<LandingPage />} />
-          <Route path='create_post' element={<CreatePostForm/>} />
-        </>
-      ) : (
-        // Unauthenticated routes
-        <>
           <Route path='' element={<LandingPage />} />
           <Route path='register' element={<Register />} />
           <Route path='login' element={<Login />} />
           <Route path='*' element={<NotFound />} />
-        </>
-      )}
+
+        // Authenticated routes
+
+        <Route element={<ProtectedRoute/>} >
+            <Route path='dashboard/content' element={<ContentListPage/>}  />
+            <Route path='blog/:slug' element={<ContentPage />} />
+            <Route path="/dashboard" element={  <DashboardLayout>  <DashboardHome /> </DashboardLayout>}/>
+            <Route path='content/create' element={<CreatePostForm/>} />
+            <Route path='content/update/:id' element={<EditPostForm/>} />
+            <Route path='categories/create' element={<CreateCategoryForm/>} />
+            <Route path='categories' element={<CategoriesList/>} />
+        </Route>
     </Routes>
   );
 }

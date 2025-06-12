@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
 from django.utils.text import slugify
+from django.utils import timezone
+from django.db.models import Count
 
 
 class CategoryModel(models.Model):
@@ -11,6 +13,15 @@ class CategoryModel(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
+
+class PostQuerySet(models.QuerySet):
+    def with_view_counts(self):
+        return self.annotate(view_count=Count('views'))
+
+    def top_viewed(self, limit=5):
+        return self.with_view_counts().order_by('-view_count')[:5]
 
 
 class ContentModel(models.Model):
@@ -28,7 +39,9 @@ class ContentModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(auto_now_add=True)
-    views = models.PositiveIntegerField(default=0)
+
+    objects = PostQuerySet.as_manager()
+   
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -39,3 +52,9 @@ class ContentModel(models.Model):
     
     def __str__(self):
         return self.title
+    
+
+class PostView(models.Model):
+    post = models.ForeignKey(ContentModel, on_delete=models.CASCADE, related_name='views')
+    viewed_at = models.DateTimeField(default=timezone.now)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)

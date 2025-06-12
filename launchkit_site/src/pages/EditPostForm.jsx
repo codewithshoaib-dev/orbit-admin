@@ -2,14 +2,14 @@ import React, { useState, useEffect, useReducer } from "react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/Button";
+import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/TextArea";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 import Select from "react-select";
 import { Switch } from "../components/ui/switch";
 
-// --- Form state reducer for scalability ---
+
 const initialState = {
   title: "",
   slug: "",
@@ -45,7 +45,7 @@ const EditPostForm = () => {
   const [loadingPost, setLoadingPost] = useState(true);
   const [activeTab, setActiveTab] = useState("basicInfo");
 
-  // Fetch categories
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -65,7 +65,6 @@ const EditPostForm = () => {
     fetchCategories();
   }, []);
 
-  // Fetch existing post data
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -76,7 +75,7 @@ const EditPostForm = () => {
           payload: {
             ...postData,
             categories: postData.categories.map((cat) => cat.id),
-            img: null, // img should remain null unless user uploads a new one
+            img: null, 
           },
         });
       } catch (error) {
@@ -220,7 +219,7 @@ const EditPostForm = () => {
             </div>
           )}
 
-          {/* SEO SETTINGS */}
+        
           {activeTab === "seoSettings" && (
             <div className="space-y-6">
               <div>

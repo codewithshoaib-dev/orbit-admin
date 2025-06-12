@@ -1,8 +1,8 @@
 import React from "react";
 
 export const Button = ({ children, asChild, className = "", ...props }) => {
-  // If asChild is true, do not pass the button as an actual DOM element
-  const Component = asChild ? "span" : "button"; // Use a span if asChild is true
+ 
+  const Component = asChild ? "span" : "button"; 
 
   return (
     <Component

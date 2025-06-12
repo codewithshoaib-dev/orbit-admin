@@ -47,7 +47,7 @@ const LandingPage = () => {
   return (
     <div className="font-sans text-gray-800 bg-slate-50">
 
-      {/* Hero */}
+     
       <section className="bg-gradient-to-br from-blue-700 to-indigo-800 text-white text-center py-24 px-6">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-6">Custom Landing Pages & CMS Builds</h1>
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
@@ -61,7 +61,7 @@ const LandingPage = () => {
         </button>
       </section>
 
-      {/* Services */}
+  
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">What I Offer</h2>
@@ -84,7 +84,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CMS Showcase */}
+    
       <section className="py-20 bg-blue-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">CMS Features Preview</h2>
@@ -106,7 +106,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Contact */}
       <section id="contact-form" className="py-20">
         <div className="max-w-lg mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Get In Touch</h2>
@@ -123,10 +122,10 @@ const LandingPage = () => {
 
       <footer className="bg-blue-600 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        {/* existing LaunchKit, Product, Company, Legal blocks here */}
+       
       </div>
 
-      {/* Social Links */}
+     
       <div className="mt-10 flex justify-center space-x-6">
         <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-gray-300 transition">
           <Linkedin className="h-6 w-6" />

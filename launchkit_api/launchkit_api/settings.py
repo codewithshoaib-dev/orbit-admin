@@ -16,11 +16,10 @@ env.read_env(BASE_DIR / '.env')
 
 
 
-SECRET_KEY = env('SECRET_KEY', default='fallback-secret-key')
-
+SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = [('*')]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -142,7 +141,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute',
+        'anon': '100/minute',
     }
 }
 

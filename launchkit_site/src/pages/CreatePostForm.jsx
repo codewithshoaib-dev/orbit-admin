@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/Button";
+import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/TextArea";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
@@ -38,10 +38,9 @@ const CreatePostForm = () => {
   const [formData, dispatch] = useReducer(formReducer, initialState);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [errors, setErrors] = useState({}); // Changed to an object to store field-specific errors
+  const [errors, setErrors] = useState({}); 
   const [activeTab, setActiveTab] = useState("basicInfo");
 
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -61,7 +60,7 @@ const CreatePostForm = () => {
     fetchCategories();
   }, []);
 
-  // Generic input handler
+
   const handleChange = (e) => {
     const { name, value, type, files, checked } = e.target;
     const newValue = type === "file" ? files[0] : type === "checkbox" ? checked : value;

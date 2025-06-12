@@ -15,7 +15,7 @@ export default function ContentListPage() {
   const fetchedUrls = useRef(new Set());
   const navigate = useNavigate();
 
-  // Fetch categories
+  
   const fetchCategories = async () => {
     try {
       const response = await api.get("categories");
@@ -80,7 +80,7 @@ export default function ContentListPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Latest Blog Posts</h1>
 
-        {/* Category Filter Dropdown */}
+ 
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}

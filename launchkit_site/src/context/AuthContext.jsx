@@ -22,12 +22,12 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch on app load
+ 
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
-  // Refresh user on tab focus or visibility change
+ 
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Login failed:", error);
       if (error.response?.data) {
-        return { success: false, errors: error.response.data }; // assuming your API returns {username: [...], password: [...]} or {non_field_errors: [...]}
+        return { success: false, errors: error.response.data }; 
       }
       return { success: false, errors: { non_field_errors: ["Server error. Please try again."] } };
     }
@@ -67,7 +67,7 @@ const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       
-      //navigate("/login");
+     
     }
   };
 

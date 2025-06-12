@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import LandingPage from './pages/landingpage';
+import LandingPage from './pages/Landingpage';
 import './index.css';
 import Register from './pages/Register';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -19,11 +19,10 @@ import CategoriesList from './pages/CategoriesList';
 import PublicContentPage from './pages/PublicContentPage';
 
 function App() {
-  
   return (
     <Routes>
 
-          <Route path='blog/:slug' element={<PublicContentPage/>}  />
+          <Route path='blogs/:slug' element={<PublicContentPage/>}  />
           <Route path='content' element={<ContentListPage/>}  />
           <Route path='' element={<LandingPage />} />
           <Route path='register' element={<Register />} />
@@ -35,8 +34,8 @@ function App() {
         <Route element={<ProtectedRoute/>} >
             <Route path='dashboard/content' element={<ContentListPage/>}  />
             <Route path='blog/:slug' element={<ContentPage />} />
-            <Route path="/dashboard" element={  <DashboardLayout>  <DashboardHome /> </DashboardLayout>}/>
-            <Route path='content/create' element={<CreatePostForm/>} />
+            <Route path="dashboard" element={  <DashboardLayout>  <DashboardHome /> </DashboardLayout>}/>
+            <Route path='dashboard/content/create' element={<CreatePostForm/>} />
             <Route path='content/update/:id' element={<EditPostForm/>} />
             <Route path='categories/create' element={<CreateCategoryForm/>} />
             <Route path='categories' element={<CategoriesList/>} />

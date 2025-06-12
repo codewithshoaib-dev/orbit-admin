@@ -9,7 +9,7 @@ const Topbar = ({ toggleSidebar}) => {
   const  handleLogout = () => logout();
   return (
     <div className="flex items-center justify-between h-14 bg-white border-b px-4 lg:px-6 sticky top-0 z-50">
-      {/* Left Section: Hamburger Icon and Title */}
+  
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
@@ -21,7 +21,7 @@ const Topbar = ({ toggleSidebar}) => {
         <h1 className="text-lg font-semibold text-gray-800">Dashboard</h1>
       </div>
 
-      {/* Right Section: Actions */}
+
       <div className="flex items-center gap-3">
         <button
           onClick={ () => navigate('content/create')}

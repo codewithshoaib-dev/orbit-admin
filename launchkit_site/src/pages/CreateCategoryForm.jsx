@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/Button";
+import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 
@@ -16,25 +16,25 @@ const CreateCategoryForm = () => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Handle input changes
+ 
   const handleChange = (e) => {
-    const { name, value } = e.target; // Fixed destructuring
-    setFormData((prev) => ({ ...prev, [name]: value })); // Correctly update state
+    const { name, value } = e.target; 
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submission
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setErrors({}); // Clear previous errors
+    setErrors({}); 
 
     try {
       const response = await api.post("/categories/", formData);
-      navigate("/categories"); // Redirect to categories list on success
+      navigate("/categories");
     } catch (error) {
-      setErrors(error.response?.data || {}); // Display server-side validation errors
+      setErrors(error.response?.data || {}); 
     } finally {
-      setSubmitting(false); // Reset submitting state
+      setSubmitting(false);
     }
   };
 

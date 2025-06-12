@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/Button";
+import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { AlertTriangle, Plus, Trash2 } from "lucide-react";
 
@@ -70,7 +70,7 @@ const CategoriesList = () => {
         </CardContent>
       </Card>
 
-      {/* Floating Action Button */}
+     
       <Button
         onClick={() => navigate("/categories/create")}
         className="fixed bottom-6 right-6 rounded-full h-14 w-14 p-0 shadow-lg"
@@ -78,7 +78,7 @@ const CategoriesList = () => {
         <Plus className="w-6 h-6" />
       </Button>
 
-      {/* Delete Confirmation Modal */}
+   
       {deleteId && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">

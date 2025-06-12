@@ -36,7 +36,7 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 px-4">
       <div className="flex w-full max-w-4xl bg-white overflow-hidden rounded-lg shadow-lg flex-col md:flex-row">
-        {/* Branding Panel */}
+      
         <div className="hidden md:flex md:w-1/3 flex-col items-center justify-center p-8 bg-blue-600 text-white">
           <div className="h-20 w-20 bg-white rounded-full mb-4 flex items-center justify-center">
             <span className="text-blue-600 font-bold text-xl">🚀</span>
@@ -47,9 +47,9 @@ const Register = () => {
           </p>
         </div>
 
-        {/* Form Panel */}
+      
         <div className="w-full md:w-2/3 p-8 flex flex-col justify-center">
-          {/* Mobile Branding */}
+          
           <div className="md:hidden text-center mb-6">
             <h1 className="text-3xl font-extrabold text-blue-600">LaunchKit</h1>
             <p className="text-gray-500 text-sm mt-1">
@@ -116,7 +116,7 @@ const Register = () => {
             </Link>
           </p>
 
-          {/* Footer Text */}
+         
           <p className="text-xs text-gray-400 mt-8 text-center">
             © 2025 LaunchKit. All rights reserved.
           </p>
